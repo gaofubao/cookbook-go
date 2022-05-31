@@ -82,11 +82,11 @@ GC没有混合写屏障前，一直是插入写屏障；混合写屏障是插入
 
 ### GC 触发时机
 主动触发：
-- 调用 runtime.GC() 方法，触发 GC
+- 调用 runtime.GC() 方法，触发 GC。
 
 被动触发：
-- 定时触发，该触发条件由 runtime.forcegcperiod 变量控制，默认为 2 分钟。当超过两分钟没有产生任何 GC 时，触发 GC
-- 根据内存分配阈值触发，该触发条件由环境变量 GOGC 控制，默认值为 100（100%），当前堆内存占用是上次GC结束后占用内存的 2 倍时，触发 GC
+- 定时触发，该触发条件由 runtime.forcegcperiod 变量控制，默认为 2 分钟。当超过两分钟没有产生任何 GC 时，触发 GC。
+- 根据内存分配阈值触发，该触发条件由环境变量 GOGC 控制，默认值为 100（100%），当前堆内存占用是上次GC结束后占用内存的 2 倍时，触发 GC。
 
 ### GC 算法演进
 - Go 1：mark and sweep 操作都需要 STW
@@ -113,9 +113,9 @@ GC没有混合写屏障前，一直是插入写屏障；混合写屏障是插入
 ### GODEBUG=gctrace=1
 ```go
 func main() {
-	for n := 1; n < 100000; n++ {
-		_ = make([]byte, 1<<20)
-	}
+    for n := 1; n < 100000; n++ {
+        _ = make([]byte, 1<<20)
+    }
 }
 ```
 
@@ -143,15 +143,15 @@ gctrace输出及各字段含义：
 ### go tool trace
 ```go
 func main() {
-	f, _ := os.Create("trace.out")
-	defer f.Close()
+    f, _ := os.Create("trace.out")
+    defer f.Close()
 
-	trace.Start(f)
-	defer trace.Stop()
+    trace.Start(f)
+    defer trace.Stop()
 
-	for n := 1; n < 100000; n++ {
-		_ = make([]byte, 1<<20)
-	}
+    for n := 1; n < 100000; n++ {
+        _ = make([]byte, 1<<20)
+    }
 }
 ```
 
@@ -176,24 +176,24 @@ func main() {
 ### debug.ReadGCStats
 ```go
 func printGCStats() {
-	t := time.NewTicker(time.Second)
-	s := debug.GCStats{}
+    t := time.NewTicker(time.Second)
+    s := debug.GCStats{}
 
-	for {
-		select {
-		case <-t.C:
-			debug.ReadGCStats(&s)
-			fmt.Printf("gc %d last@%v, PauseTotal %v\n", s.NumGC, s.LastGC, s.PauseTotal)
-		}
-	}
+    for {
+        select {
+        case <-t.C:
+            debug.ReadGCStats(&s)
+            fmt.Printf("gc %d last@%v, PauseTotal %v\n", s.NumGC, s.LastGC, s.PauseTotal)
+        }
+    }
 }
 
 func main() {
-	go printGCStats()
+    go printGCStats()
 
-	for n := 1; n < 100000; n++ {
-		_ = make([]byte, 1<<20)
-	}
+    for n := 1; n < 100000; n++ {
+        _ = make([]byte, 1<<20)
+    }
 }
 ```
 
@@ -208,37 +208,37 @@ gc 8830 last@2022-05-31 19:30:25.32224 +0800 CST, PauseTotal 410.77667ms
 GCStats 各字段含义：
 ```go
 type GCStats struct {
-	LastGC         time.Time       // time of last collection
-	NumGC          int64           // number of garbage collections
-	PauseTotal     time.Duration   // total pause for all collections
-	Pause          []time.Duration // pause history, most recent first
-	PauseEnd       []time.Time     // pause end times history, most recent first
-	PauseQuantiles []time.Duration
+    LastGC         time.Time       // time of last collection
+    NumGC          int64           // number of garbage collections
+    PauseTotal     time.Duration   // total pause for all collections
+    Pause          []time.Duration // pause history, most recent first
+    PauseEnd       []time.Time     // pause end times history, most recent first
+    PauseQuantiles []time.Duration
 }
 ```
 
 ### runtime.ReadMemStats
 ```go
 func printMemStats() {
-	t := time.NewTicker(time.Second)
-	s := runtime.MemStats{}
+    t := time.NewTicker(time.Second)
+    s := runtime.MemStats{}
 
-	for {
-		select {
-		case <-t.C:
-			runtime.ReadMemStats(&s)
-			fmt.Printf("gc %d last@%v, heap_object_num: %v, heap_alloc: %vMB, next_heap_size: %vMB\n",
-				s.NumGC, time.Unix(int64(time.Duration(s.LastGC).Seconds()), 0), s.HeapObjects, s.HeapAlloc/(1<<20), s.NextGC/(1<<20))
-		}
-	}
+    for {
+        select {
+        case <-t.C:
+            runtime.ReadMemStats(&s)
+            fmt.Printf("gc %d last@%v, heap_object_num: %v, heap_alloc: %vMB, next_heap_size: %vMB\n",
+                s.NumGC, time.Unix(int64(time.Duration(s.LastGC).Seconds()), 0), s.HeapObjects, s.HeapAlloc/(1<<20), s.NextGC/(1<<20))
+        }
+    }
 }
 
 func main() {
-	go printMemStats()
+    go printMemStats()
 
-	for n := 1; n < 100000; n++ {
-		_ = make([]byte, 1<<20)
-	}
+    for n := 1; n < 100000; n++ {
+        _ = make([]byte, 1<<20)
+    }
 }
 ```
 
@@ -254,232 +254,232 @@ MemStats 各字段含义：
 ```go
 type MemStats struct {
 
-	// Alloc is bytes of allocated heap objects.
-	//
-	// This is the same as HeapAlloc (see below).
-	Alloc uint64
+    // Alloc is bytes of allocated heap objects.
+    //
+    // This is the same as HeapAlloc (see below).
+    Alloc uint64
 
-	// TotalAlloc is cumulative bytes allocated for heap objects.
-	//
-	// TotalAlloc increases as heap objects are allocated, but
-	// unlike Alloc and HeapAlloc, it does not decrease when
-	// objects are freed.
-	TotalAlloc uint64
+    // TotalAlloc is cumulative bytes allocated for heap objects.
+    //
+    // TotalAlloc increases as heap objects are allocated, but
+    // unlike Alloc and HeapAlloc, it does not decrease when
+    // objects are freed.
+    TotalAlloc uint64
 
-	// Sys is the total bytes of memory obtained from the OS.
-	//
-	// Sys is the sum of the XSys fields below. Sys measures the
-	// virtual address space reserved by the Go runtime for the
-	// heap, stacks, and other internal data structures. It's
-	// likely that not all of the virtual address space is backed
-	// by physical memory at any given moment, though in general
-	// it all was at some point.
-	Sys uint64
+    // Sys is the total bytes of memory obtained from the OS.
+    //
+    // Sys is the sum of the XSys fields below. Sys measures the
+    // virtual address space reserved by the Go runtime for the
+    // heap, stacks, and other internal data structures. It's
+    // likely that not all of the virtual address space is backed
+    // by physical memory at any given moment, though in general
+    // it all was at some point.
+    Sys uint64
 
-	// Lookups is the number of pointer lookups performed by the
-	// runtime.
-	//
-	// This is primarily useful for debugging runtime internals.
-	Lookups uint64
+    // Lookups is the number of pointer lookups performed by the
+    // runtime.
+    //
+    // This is primarily useful for debugging runtime internals.
+    Lookups uint64
 
-	// Mallocs is the cumulative count of heap objects allocated.
-	// The number of live objects is Mallocs - Frees.
-	Mallocs uint64
+    // Mallocs is the cumulative count of heap objects allocated.
+    // The number of live objects is Mallocs - Frees.
+    Mallocs uint64
 
-	// Frees is the cumulative count of heap objects freed.
-	Frees uint64
+    // Frees is the cumulative count of heap objects freed.
+    Frees uint64
 
-	// HeapAlloc is bytes of allocated heap objects.
-	//
-	// "Allocated" heap objects include all reachable objects, as
-	// well as unreachable objects that the garbage collector has
-	// not yet freed. Specifically, HeapAlloc increases as heap
-	// objects are allocated and decreases as the heap is swept
-	// and unreachable objects are freed. Sweeping occurs
-	// incrementally between GC cycles, so these two processes
-	// occur simultaneously, and as a result HeapAlloc tends to
-	// change smoothly (in contrast with the sawtooth that is
-	// typical of stop-the-world garbage collectors).
-	HeapAlloc uint64
+    // HeapAlloc is bytes of allocated heap objects.
+    //
+    // "Allocated" heap objects include all reachable objects, as
+    // well as unreachable objects that the garbage collector has
+    // not yet freed. Specifically, HeapAlloc increases as heap
+    // objects are allocated and decreases as the heap is swept
+    // and unreachable objects are freed. Sweeping occurs
+    // incrementally between GC cycles, so these two processes
+    // occur simultaneously, and as a result HeapAlloc tends to
+    // change smoothly (in contrast with the sawtooth that is
+    // typical of stop-the-world garbage collectors).
+    HeapAlloc uint64
 
-	// HeapSys is bytes of heap memory obtained from the OS.
-	//
-	// HeapSys measures the amount of virtual address space
-	// reserved for the heap. This includes virtual address space
-	// that has been reserved but not yet used, which consumes no
-	// physical memory, but tends to be small, as well as virtual
-	// address space for which the physical memory has been
-	// returned to the OS after it became unused (see HeapReleased
-	// for a measure of the latter).
-	//
-	// HeapSys estimates the largest size the heap has had.
-	HeapSys uint64
+    // HeapSys is bytes of heap memory obtained from the OS.
+    //
+    // HeapSys measures the amount of virtual address space
+    // reserved for the heap. This includes virtual address space
+    // that has been reserved but not yet used, which consumes no
+    // physical memory, but tends to be small, as well as virtual
+    // address space for which the physical memory has been
+    // returned to the OS after it became unused (see HeapReleased
+    // for a measure of the latter).
+    //
+    // HeapSys estimates the largest size the heap has had.
+    HeapSys uint64
 
-	// HeapIdle is bytes in idle (unused) spans.
-	//
-	// Idle spans have no objects in them. These spans could be
-	// (and may already have been) returned to the OS, or they can
-	// be reused for heap allocations, or they can be reused as
-	// stack memory.
-	//
-	// HeapIdle minus HeapReleased estimates the amount of memory
-	// that could be returned to the OS, but is being retained by
-	// the runtime so it can grow the heap without requesting more
-	// memory from the OS. If this difference is significantly
-	// larger than the heap size, it indicates there was a recent
-	// transient spike in live heap size.
-	HeapIdle uint64
+    // HeapIdle is bytes in idle (unused) spans.
+    //
+    // Idle spans have no objects in them. These spans could be
+    // (and may already have been) returned to the OS, or they can
+    // be reused for heap allocations, or they can be reused as
+    // stack memory.
+    //
+    // HeapIdle minus HeapReleased estimates the amount of memory
+    // that could be returned to the OS, but is being retained by
+    // the runtime so it can grow the heap without requesting more
+    // memory from the OS. If this difference is significantly
+    // larger than the heap size, it indicates there was a recent
+    // transient spike in live heap size.
+    HeapIdle uint64
 
-	// HeapInuse is bytes in in-use spans.
-	//
-	// In-use spans have at least one object in them. These spans
-	// can only be used for other objects of roughly the same
-	// size.
-	//
-	// HeapInuse minus HeapAlloc estimates the amount of memory
-	// that has been dedicated to particular size classes, but is
-	// not currently being used. This is an upper bound on
-	// fragmentation, but in general this memory can be reused
-	// efficiently.
-	HeapInuse uint64
+    // HeapInuse is bytes in in-use spans.
+    //
+    // In-use spans have at least one object in them. These spans
+    // can only be used for other objects of roughly the same
+    // size.
+    //
+    // HeapInuse minus HeapAlloc estimates the amount of memory
+    // that has been dedicated to particular size classes, but is
+    // not currently being used. This is an upper bound on
+    // fragmentation, but in general this memory can be reused
+    // efficiently.
+    HeapInuse uint64
 
-	// HeapReleased is bytes of physical memory returned to the OS.
-	//
-	// This counts heap memory from idle spans that was returned
-	// to the OS and has not yet been reacquired for the heap.
-	HeapReleased uint64
+    // HeapReleased is bytes of physical memory returned to the OS.
+    //
+    // This counts heap memory from idle spans that was returned
+    // to the OS and has not yet been reacquired for the heap.
+    HeapReleased uint64
 
-	// HeapObjects is the number of allocated heap objects.
-	//
-	// Like HeapAlloc, this increases as objects are allocated and
-	// decreases as the heap is swept and unreachable objects are
-	// freed.
-	HeapObjects uint64
+    // HeapObjects is the number of allocated heap objects.
+    //
+    // Like HeapAlloc, this increases as objects are allocated and
+    // decreases as the heap is swept and unreachable objects are
+    // freed.
+    HeapObjects uint64
 
-	// StackInuse is bytes in stack spans.
-	//
-	// In-use stack spans have at least one stack in them. These
-	// spans can only be used for other stacks of the same size.
-	//
-	// There is no StackIdle because unused stack spans are
-	// returned to the heap (and hence counted toward HeapIdle).
-	StackInuse uint64
+    // StackInuse is bytes in stack spans.
+    //
+    // In-use stack spans have at least one stack in them. These
+    // spans can only be used for other stacks of the same size.
+    //
+    // There is no StackIdle because unused stack spans are
+    // returned to the heap (and hence counted toward HeapIdle).
+    StackInuse uint64
 
-	// StackSys is bytes of stack memory obtained from the OS.
-	//
-	// StackSys is StackInuse, plus any memory obtained directly
-	// from the OS for OS thread stacks (which should be minimal).
-	StackSys uint64
+    // StackSys is bytes of stack memory obtained from the OS.
+    //
+    // StackSys is StackInuse, plus any memory obtained directly
+    // from the OS for OS thread stacks (which should be minimal).
+    StackSys uint64
 
-	// MSpanInuse is bytes of allocated mspan structures.
-	MSpanInuse uint64
+    // MSpanInuse is bytes of allocated mspan structures.
+    MSpanInuse uint64
 
-	// MSpanSys is bytes of memory obtained from the OS for mspan
-	// structures.
-	MSpanSys uint64
+    // MSpanSys is bytes of memory obtained from the OS for mspan
+    // structures.
+    MSpanSys uint64
 
-	// MCacheInuse is bytes of allocated mcache structures.
-	MCacheInuse uint64
+    // MCacheInuse is bytes of allocated mcache structures.
+    MCacheInuse uint64
 
-	// MCacheSys is bytes of memory obtained from the OS for
-	// mcache structures.
-	MCacheSys uint64
+    // MCacheSys is bytes of memory obtained from the OS for
+    // mcache structures.
+    MCacheSys uint64
 
-	// BuckHashSys is bytes of memory in profiling bucket hash tables.
-	BuckHashSys uint64
+    // BuckHashSys is bytes of memory in profiling bucket hash tables.
+    BuckHashSys uint64
 
-	// GCSys is bytes of memory in garbage collection metadata.
-	GCSys uint64
+    // GCSys is bytes of memory in garbage collection metadata.
+    GCSys uint64
 
-	// OtherSys is bytes of memory in miscellaneous off-heap
-	// runtime allocations.
-	OtherSys uint64
+    // OtherSys is bytes of memory in miscellaneous off-heap
+    // runtime allocations.
+    OtherSys uint64
 
-	// NextGC is the target heap size of the next GC cycle.
-	//
-	// The garbage collector's goal is to keep HeapAlloc ≤ NextGC.
-	// At the end of each GC cycle, the target for the next cycle
-	// is computed based on the amount of reachable data and the
-	// value of GOGC.
-	NextGC uint64
+    // NextGC is the target heap size of the next GC cycle.
+    //
+    // The garbage collector's goal is to keep HeapAlloc ≤ NextGC.
+    // At the end of each GC cycle, the target for the next cycle
+    // is computed based on the amount of reachable data and the
+    // value of GOGC.
+    NextGC uint64
 
-	// LastGC is the time the last garbage collection finished, as
-	// nanoseconds since 1970 (the UNIX epoch).
-	LastGC uint64
+    // LastGC is the time the last garbage collection finished, as
+    // nanoseconds since 1970 (the UNIX epoch).
+    LastGC uint64
 
-	// PauseTotalNs is the cumulative nanoseconds in GC
-	// stop-the-world pauses since the program started.
-	//
-	// During a stop-the-world pause, all goroutines are paused
-	// and only the garbage collector can run.
-	PauseTotalNs uint64
+    // PauseTotalNs is the cumulative nanoseconds in GC
+    // stop-the-world pauses since the program started.
+    //
+    // During a stop-the-world pause, all goroutines are paused
+    // and only the garbage collector can run.
+    PauseTotalNs uint64
 
-	// PauseNs is a circular buffer of recent GC stop-the-world
-	// pause times in nanoseconds.
-	//
-	// The most recent pause is at PauseNs[(NumGC+255)%256]. In
-	// general, PauseNs[N%256] records the time paused in the most
-	// recent N%256th GC cycle. There may be multiple pauses per
-	// GC cycle; this is the sum of all pauses during a cycle.
-	PauseNs [256]uint64
+    // PauseNs is a circular buffer of recent GC stop-the-world
+    // pause times in nanoseconds.
+    //
+    // The most recent pause is at PauseNs[(NumGC+255)%256]. In
+    // general, PauseNs[N%256] records the time paused in the most
+    // recent N%256th GC cycle. There may be multiple pauses per
+    // GC cycle; this is the sum of all pauses during a cycle.
+    PauseNs [256]uint64
 
-	// PauseEnd is a circular buffer of recent GC pause end times,
-	// as nanoseconds since 1970 (the UNIX epoch).
-	//
-	// This buffer is filled the same way as PauseNs. There may be
-	// multiple pauses per GC cycle; this records the end of the
-	// last pause in a cycle.
-	PauseEnd [256]uint64
+    // PauseEnd is a circular buffer of recent GC pause end times,
+    // as nanoseconds since 1970 (the UNIX epoch).
+    //
+    // This buffer is filled the same way as PauseNs. There may be
+    // multiple pauses per GC cycle; this records the end of the
+    // last pause in a cycle.
+    PauseEnd [256]uint64
 
-	// NumGC is the number of completed GC cycles.
-	NumGC uint32
+    // NumGC is the number of completed GC cycles.
+    NumGC uint32
 
-	// NumForcedGC is the number of GC cycles that were forced by
-	// the application calling the GC function.
-	NumForcedGC uint32
+    // NumForcedGC is the number of GC cycles that were forced by
+    // the application calling the GC function.
+    NumForcedGC uint32
 
-	// GCCPUFraction is the fraction of this program's available
-	// CPU time used by the GC since the program started.
-	//
-	// GCCPUFraction is expressed as a number between 0 and 1,
-	// where 0 means GC has consumed none of this program's CPU. A
-	// program's available CPU time is defined as the integral of
-	// GOMAXPROCS since the program started. That is, if
-	// GOMAXPROCS is 2 and a program has been running for 10
-	// seconds, its "available CPU" is 20 seconds. GCCPUFraction
-	// does not include CPU time used for write barrier activity.
-	//
-	// This is the same as the fraction of CPU reported by
-	// GODEBUG=gctrace=1.
-	GCCPUFraction float64
+    // GCCPUFraction is the fraction of this program's available
+    // CPU time used by the GC since the program started.
+    //
+    // GCCPUFraction is expressed as a number between 0 and 1,
+    // where 0 means GC has consumed none of this program's CPU. A
+    // program's available CPU time is defined as the integral of
+    // GOMAXPROCS since the program started. That is, if
+    // GOMAXPROCS is 2 and a program has been running for 10
+    // seconds, its "available CPU" is 20 seconds. GCCPUFraction
+    // does not include CPU time used for write barrier activity.
+    //
+    // This is the same as the fraction of CPU reported by
+    // GODEBUG=gctrace=1.
+    GCCPUFraction float64
 
-	// EnableGC indicates that GC is enabled. It is always true,
-	// even if GOGC=off.
-	EnableGC bool
+    // EnableGC indicates that GC is enabled. It is always true,
+    // even if GOGC=off.
+    EnableGC bool
 
-	// DebugGC is currently unused.
-	DebugGC bool
+    // DebugGC is currently unused.
+    DebugGC bool
 
-	// BySize reports per-size class allocation statistics.
-	//
-	// BySize[N] gives statistics for allocations of size S where
-	// BySize[N-1].Size < S ≤ BySize[N].Size.
-	//
-	// This does not report allocations larger than BySize[60].Size.
-	BySize [61]struct {
-		// Size is the maximum byte size of an object in this
-		// size class.
-		Size uint32
+    // BySize reports per-size class allocation statistics.
+    //
+    // BySize[N] gives statistics for allocations of size S where
+    // BySize[N-1].Size < S ≤ BySize[N].Size.
+    //
+    // This does not report allocations larger than BySize[60].Size.
+    BySize [61]struct {
+        // Size is the maximum byte size of an object in this
+        // size class.
+        Size uint32
 
-		// Mallocs is the cumulative count of heap objects
-		// allocated in this size class. The cumulative bytes
-		// of allocation is Size*Mallocs. The number of live
-		// objects in this size class is Mallocs - Frees.
-		Mallocs uint64
+        // Mallocs is the cumulative count of heap objects
+        // allocated in this size class. The cumulative bytes
+        // of allocation is Size*Mallocs. The number of live
+        // objects in this size class is Mallocs - Frees.
+        Mallocs uint64
 
-		// Frees is the cumulative count of heap objects freed
-		// in this size class.
-		Frees uint64
-	}
+        // Frees is the cumulative count of heap objects freed
+        // in this size class.
+        Frees uint64
+    }
 }
 ```
