@@ -152,15 +152,15 @@ type mheap struct {
 #### 指针逃逸
 ```go
 func escape() {
-	s := make([]int, 0, 10000)
+    s := make([]int, 0, 10000)
 
-	for index := range s {
-		s[index] = index
-	}
+    for index := range s {
+        s[index] = index
+    }
 }
 
 func main() {
-	escape()
+    escape()
 }
 ```
 查看逃逸情况：
@@ -177,15 +177,15 @@ func main() {
 #### 栈空间不足
 ```go
 func escape() {
-	s := make([]int, 0, 10000)
+    s := make([]int, 0, 10000)
 
-	for index := range s {
-		s[index] = index
-	}
+    for index := range s {
+        s[index] = index
+    }
 }
 
 func main() {
-	escape()
+    escape()
 }
 ```
 查看逃逸情况：
@@ -200,16 +200,16 @@ func main() {
 #### 变量大小不确定
 ```go
 func escape() {
-	number := 10
-	s := make([]int, number) // 编译期间无法确定slice的长度
+    number := 10
+    s := make([]int, number) // 编译期间无法确定slice的长度
 
-	for i := 0; i < len(s); i++ {
-		s[i] = i
-	}
+    for i := 0; i < len(s); i++ {
+        s[i] = i
+    }
 }
 
 func main() {
-	escape()
+    escape()
 }
 ```
 查看逃逸情况：
@@ -229,12 +229,12 @@ func main() {
 空接口 interface{} 可以表示任意的类型，如果函数参数为 interface{}，编译期间很难确定其参数的具体类型，也会发生逃逸。
 
 ```go
-func escape4() {
-	fmt.Println(1111)
+func escape() {
+    fmt.Println(1111)
 }
 
 func main() {
-	escape4()
+    escape()
 }
 ```
 查看逃逸情况：
@@ -256,17 +256,17 @@ fmt.Println(a ...interface{}) 函数参数为 interface，编译器不确定参�
 
 #### 闭包引用对象
 ```go
-func escape5() func() int {
-	var i int = 1
+func escape() func() int {
+    var i int = 1
 
-	return func() int {
-		i++
-		return i
-	}
+    return func() int {
+        i++
+        return i
+    }
 }
 
 func main() {
-	escape5()
+    escape()
 }
 ```
 查看逃逸情况：
@@ -303,15 +303,15 @@ func main() {
 查看各类型在 MacOS 64 系统上的对齐系数：
 ```go
 func main() {
-	fmt.Printf("bool alignof is %d\n", unsafe.Alignof(bool(true)))    // 1
-	fmt.Printf("string alignof is %d\n", unsafe.Alignof(string("a"))) // 8
-	fmt.Printf("int8 alignof is %d\n", unsafe.Alignof(int8(0)))       // 1
-	fmt.Printf("int16 alignof is %d\n", unsafe.Alignof(int16(0)))     // 2
-	fmt.Printf("int32 alignof is %d\n", unsafe.Alignof(int32(0)))     // 4
-	fmt.Printf("int64 alignof is %d\n", unsafe.Alignof(int64(0)))     // 8
-	fmt.Printf("int alignof is %d\n", unsafe.Alignof(int(0)))         // 8
-	fmt.Printf("float32 alignof is %d\n", unsafe.Alignof(float32(0))) // 4
-	fmt.Printf("float64 alignof is %d\n", unsafe.Alignof(float64(0))) // 8
+    fmt.Printf("bool alignof is %d\n", unsafe.Alignof(bool(true)))    // 1
+    fmt.Printf("string alignof is %d\n", unsafe.Alignof(string("a"))) // 8
+    fmt.Printf("int8 alignof is %d\n", unsafe.Alignof(int8(0)))       // 1
+    fmt.Printf("int16 alignof is %d\n", unsafe.Alignof(int16(0)))     // 2
+    fmt.Printf("int32 alignof is %d\n", unsafe.Alignof(int32(0)))     // 4
+    fmt.Printf("int64 alignof is %d\n", unsafe.Alignof(int64(0)))     // 8
+    fmt.Printf("int alignof is %d\n", unsafe.Alignof(int(0)))         // 8
+    fmt.Printf("float32 alignof is %d\n", unsafe.Alignof(float32(0))) // 4
+    fmt.Printf("float64 alignof is %d\n", unsafe.Alignof(float64(0))) // 8
 }
 ```
 
@@ -334,28 +334,28 @@ type T1 struct {
 }
 
 type T2 struct {
-	i8  int8  // 1 byte
-	i64 int64 // 8 byte
-	i32 int32 // 4 byte
+    i8  int8  // 1 byte
+    i64 int64 // 8 byte
+    i32 int32 // 4 byte
 }
 
 type T3 struct {
-	i8  int8  // 1 byte
-	i32 int32 // 4 byte
-	i64 int64 // 8 byte
+    i8  int8  // 1 byte
+    i32 int32 // 4 byte
+    i64 int64 // 8 byte
 }
 
 func main() {
-	fmt.Println(runtime.GOARCH) // amd64
+    fmt.Println(runtime.GOARCH) // amd64
 
-	t1 := T1{}
-	fmt.Println(unsafe.Sizeof(t1)) // 4 bytes
+    t1 := T1{}
+    fmt.Println(unsafe.Sizeof(t1)) // 4 bytes
 
-	t2 := T2{}
-	fmt.Println(unsafe.Sizeof(t2)) // 24 bytes
+    t2 := T2{}
+    fmt.Println(unsafe.Sizeof(t2)) // 24 bytes
 
-	t3 := T3{}
-	fmt.Println(unsafe.Sizeof(t3)) // 16 bytes
+    t3 := T3{}
+    fmt.Println(unsafe.Sizeof(t3)) // 16 bytes
 }
 ```
 
