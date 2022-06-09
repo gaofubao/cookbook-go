@@ -60,3 +60,6 @@ func twoSum(nums []int, target int) [][]int {
     return nil
 }
 ```
+
+## 总结
+nSum问题
